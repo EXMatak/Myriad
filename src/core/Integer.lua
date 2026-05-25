@@ -132,6 +132,73 @@ function NumberParse(value)
     return digits, sign
 end
 
+---@return Integer
+function Integer:Absolute() 
+    return IntegerMT.new(self.digits)
+end
+
+---@param addend1 Integer
+---@param addend2 Integer
+---@return '+' | '-'
+local function SignPostAddition(addend1, addend2)
+    -- Signs are equal.
+    if (addend1.sign == addend2.sign) then return addend1.sign == 1 and '+' or '-'
+    -- First is negative, second is positive. If abs(first) < abs(second), result is positive.
+    elseif (addend1.sign == -1 and addend2.sign == 1) then
+        if (addend1:Absolute() < addend2:Absolute()) then return '+'
+        else return '-' end
+    -- Read above.    
+    elseif (addend1.sign == 1 and addend2.sign == -1) then
+        if (addend1:Absolute() < addend2:Absolute()) then return '-'
+        else return '+' end
+    end
+
+    error("Couldn't solve sign post addition.", 2)
+end
+
+---@param value Integer
+---@return Integer
+function Integer:Add_GradeSchool(value) 
+    local addend1 = self
+    local addend2 = value
+
+    -- If a == -a, return 0.
+    if (addend1.digits == addend2.digits and addend1.sign ~= addend2.sign) then return IntegerMT.new(0) end
+
+    local addendDigits1 = addend1.digits:reverse()
+    local addendDigits2 = addend2.digits:reverse()
+
+    local resultSign = SignPostAddition(addend1, addend2)
+
+    local remainderTable = {0}
+    local resultTable = {}
+
+    if (#addendDigits1 < #addendDigits2) then
+        addendDigits1, addendDigits2 = addendDigits2, addendDigits1
+    end
+
+
+    local maxDigitLength = #addendDigits1
+    local otherDigitLength = #addendDigits2
+    for i = 1, maxDigitLength, 1 do
+        -- if (currDigit > otherDigitLength) 
+
+        local currA = tonumber(addendDigits1:sub(i, i))
+        local currB = i <= otherDigitLength and tonumber(addendDigits2:sub(i, i)) or 0
+        local together = currA + currB + remainderTable[i]
+        local togetherLastDigit = together % 10
+        local remainder = math.floor(together / 10)
+
+        remainderTable[i + 1] = remainder
+        resultTable[i] = togetherLastDigit
+    end
+
+    if remainderTable[#remainderTable] ~= 0 then resultTable[#resultTable+1] = remainderTable[#remainderTable] end
+
+    return IntegerMT.new(resultSign .. table.concat(resultTable):reverse()) -- TODO: create new initializer that assumes input is valid.
+end
+IntegerMT.__add = Integer.Add_GradeSchool
+
 ---@param a Integer
 ---@param b Integer
 ---@return boolean
