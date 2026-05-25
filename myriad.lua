@@ -4,10 +4,7 @@ local myriad = {}
 
 ---@param value string | number | Integer
 function myriad.newInteger(value)
-    local new = setmetatable({}, IntegerMT)
-    new:init(value)
-
-    return new
+    return IntegerMT.new(value)
 end
 
 return myriad

@@ -1,7 +1,8 @@
-local Integer = require 'src.core.Integer'
 local myriad = require 'myriad'
 
 print("--- INTEGER TEST START [ ] ---")
+-------------------------------------------------------------------------------
+print("--- INTEGER INITIALIZATION --- (1)")
 
 local testNum1 = myriad.newInteger(123)
 local testNum2 = myriad.newInteger("123")
@@ -24,6 +25,29 @@ assert(testNum6.digits == "123" and testNum6.sign == 1)
 testNum6.digits = "124"
 assert(testNum1.digits == "123" and testNum1.sign == 1)
 assert(testNum6.digits == "124" and testNum6.sign == 1)
+
+print("--- INTEGER INITIALIZATION --- (PASS)")
+-------------------------------------------------------------------------------
+print("--- INTEGER RELATIONS --- (2)")
+
+
+assert(testNum1 <= testNum3)
+assert(not (testNum1 >= testNum3))
+assert(testNum1 == testNum2)
+assert(not (testNum1 == testNum5))
+assert(not (testNum1 ~= testNum1))
+assert(testNum5 == testNum5)
+
+assert(testNum1 < testNum3)
+assert(testNum1 <= testNum3)
+assert(not (testNum1 > testNum3))
+assert(not (testNum1 >= testNum3))
+assert(not (testNum1 == testNum3))
+assert(testNum1 ~= testNum3)
+
+
+print("--- INTEGER RELATIONS --- (PASS)")
+-------------------------------------------------------------------------------
 
 print("--- INTEGER TESTS PASS [X] ---")
 
