@@ -2,6 +2,8 @@
 
 --- Wish that I could say that the functions have some structure but right now everythings just kinda where I started writing.
 
+-- ! ------------------------------------------------------------------------------ META
+
 ---@class Integer
 ---@field digits string
 ---@field sign 1 | -1
@@ -11,6 +13,9 @@ local IntegerMT = {
     __index = Integer,
     --TODO: __add, __sub etc.
 }
+
+-- ! ------------------------------------------------------------------------------ INITIALIZATION
+
 
 ---@param value string | number | Integer
 function IntegerMT.new(value)
@@ -158,8 +163,14 @@ function NumberParse(value)
 
     return digits, sign
 end
+-- ! ------------------------------------------------------------------------------ PRINTING
 
--------------------------------------------------------------------------------- START OF RELATIONS
+function Integer:ToString()
+    return "(" .. self.sign .. ")" .. " * " .. self.digits
+end
+IntegerMT.__tostring = Integer.ToString
+
+-- ! ------------------------------------------------------------------------------ RELATIONS
 
 ---@param a Integer
 ---@param b Integer
@@ -204,7 +215,7 @@ function Integer.lessThan(a, b)
 end
 IntegerMT.__lt = Integer.lessThan
 
--------------------------------------------------------------------------------- END OF RELATIONS
+-- ! ------------------------------------------------------------------------------ ARITHMETICS
 
 --- Returns the absolute value of an Integer object.
 --- Quite self explanatory.
@@ -265,7 +276,6 @@ function Integer:Add_GradeSchool(value)
     local digitLength_max = #addend_digits1
     local digitLength_min = #addend_digits2
     for i = 1, digitLength_max, 1 do
-
         local currA = tonumber(addend_digits1:sub(i, i))
         local currB = i <= digitLength_min and tonumber(addend_digits2:sub(i, i)) or 0
         local together = currA + currB + table_remainders[i]
@@ -282,9 +292,6 @@ function Integer:Add_GradeSchool(value)
 end
 IntegerMT.__add = Integer.Add_GradeSchool
 
-function Integer:ToString()
-    return "(" .. self.sign .. ")" .. " * " .. self.digits
 end
-IntegerMT.__tostring = Integer.ToString
 
 return IntegerMT
