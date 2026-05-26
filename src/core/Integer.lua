@@ -47,13 +47,36 @@ function Integer:init(value)
 
 end
 
+--- Constructs a new Integer object from two parameters.
+--- 
+--- Assumes value input to be already valid.
+--- Only use when **100 %** sure that format is correct.
+---@param digits string
+---@param sign 1 | -1
+function Integer:initRaw(digits, sign)
+    self.digits, self.sign = digits, sign
+end
 
+---@param value string | number | Integer
 function Integer:new(value) 
     local new = setmetatable({}, IntegerMT)
     new:init(value)
 
     return new
 end
+
+--- Creates a new Integer object from two parameters.
+--- 
+--- Only use when **certain** that format is correct.
+---@param digits string
+---@param sign 1 | -1
+function Integer:newRaw(digits, sign)
+    local new = setmetatable({}, IntegerMT)
+    new:initRaw(digits, sign)
+
+    return new
+end
+    
 
 ---Recieves a string value, returns `true` if:
 --- - Not empty    
