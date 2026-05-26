@@ -2,7 +2,7 @@
 
 --- Wish that I could say that the functions have some structure but right now everythings just kinda where I started writing.
 
--- ! ------------------------------------------------------------------------------ META
+-- + ------------------------------------------------------------------------------ META
 
 ---@class Integer
 ---@field digits string
@@ -13,7 +13,7 @@ local IntegerMT = {
     __index = Integer,
 }
 
--- ! ------------------------------------------------------------------------------ INITIALIZATION
+-- + ------------------------------------------------------------------------------ INITIALIZATION
 
 
 ---@param value string | number | Integer
@@ -153,14 +153,14 @@ function NumberParse(value)
 
     return digits, sign
 end
--- ! ------------------------------------------------------------------------------ PRINTING
+-- + ------------------------------------------------------------------------------ PRINTING
 
 function Integer:ToString()
     return "(" .. self.sign .. ")" .. " * " .. self.digits
 end
 IntegerMT.__tostring = Integer.ToString
 
--- ! ------------------------------------------------------------------------------ RELATIONS
+-- + ------------------------------------------------------------------------------ RELATIONS
 
 ---@param a Integer
 ---@param b Integer
@@ -205,7 +205,7 @@ function Integer.lessThan(a, b)
 end
 IntegerMT.__lt = Integer.lessThan
 
--- ! ------------------------------------------------------------------------------ ARITHMETICS
+-- + ------------------------------------------------------------------------------ ARITHMETICS
 
 --- Returns the absolute value of an Integer object.
 --- Quite self explanatory.

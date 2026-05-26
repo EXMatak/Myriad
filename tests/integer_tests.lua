@@ -1,7 +1,8 @@
 local myriad = require 'myriad'
 
 print("--- INTEGER TEST START [ ] ---")
-------------------------------------------------------------------------------- INITS
+------------------------------------------------------------------------------
+-- INITS
 print("--- INTEGER INITIALIZATION --- (1)")
 
 local testNum1 = myriad.newInteger(123)
@@ -27,7 +28,8 @@ assert(testNum1.digits == "123" and testNum1.sign == 1)
 assert(testNum6.digits == "124" and testNum6.sign == 1)
 
 print("--- INTEGER INITIALIZATION --- (PASS)")
-------------------------------------------------------------------------------- RELATIONS
+------------------------------------------------------------------------------
+-- RELATIONS
 print("--- INTEGER RELATIONS      --- (2)")
 
 assert(testNum1 <= testNum3)
@@ -52,7 +54,8 @@ assert(not (cmpNum1 <= cmpNum2))
 
 
 print("--- INTEGER RELATIONS      --- (PASS)")
-------------------------------------------------------------------------------- ADDITION
+------------------------------------------------------------------------------
+-- ADDITION
 print("--- INTEGER ADDITION       --- (3)")
 print("   --> INTEGER ADDITION SMALL --- (3.1)")
 
@@ -108,7 +111,8 @@ assert(addBigResult2.digits == "100000000000000000000000000000000000000000000000
 
 print("   --> INTEGER ADDITION BIG   --- (PASS)")
 print("--- INTEGER ADDITION       --- (PASS)")
-------------------------------------------------------------------------------- PRINTING
+------------------------------------------------------------------------------
+-- PRINTING
 print("--- INTEGER PRINTING       --- (4)")
 
 -- print(addResult9)
@@ -117,7 +121,8 @@ assert(tostring(addResult9) == "(1) * 2469135780")
 assert(tostring(addNum1) == "(1) * 0")
 
 print("--- INTEGER PRINTING       --- (PASS)")
-------------------------------------------------------------------------------- SUBTRACTION
+-------------------------------------------------------------------------------
+--SUBTRACTION
 print("--- INTEGER SUBTRACTION    --- (5)")
 print("   --> INTEGER SUBTRACT SMALL --- (5.1)")
 
