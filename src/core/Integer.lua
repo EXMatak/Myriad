@@ -255,28 +255,26 @@ function Integer:Add_GradeSchool(value)
 
     local result_sign = SignPostAddition(addend1, addend2)
 
-    local table_remainders = {0} -- TODO: Rework so that this is not a table.
+    local remainder = 0
     local table_result = {}
 
     if (#addend_digits1 < #addend_digits2) then
         addend_digits1, addend_digits2 = addend_digits2, addend_digits1
     end
 
-
     local digitLength_max = #addend_digits1
     local digitLength_min = #addend_digits2
     for i = 1, digitLength_max, 1 do
         local currA = tonumber(addend_digits1:sub(i, i))
         local currB = i <= digitLength_min and tonumber(addend_digits2:sub(i, i)) or 0
-        local together = currA + currB + table_remainders[i]
+        local together = currA + currB + remainder
         local togetherLastDigit = together % 10
-        local remainder = math.floor(together / 10)
+        remainder = math.floor(together / 10)
 
-        table_remainders[i + 1] = remainder
         table_result[i] = togetherLastDigit
     end
 
-    if table_remainders[#table_remainders] ~= 0 then table_result[#table_result+1] = table_remainders[#table_remainders] end
+    if remainder ~= 0 then table_result[#table_result+1] = remainder end
 
     return _Integer_NewRaw(table.concat(table_result):reverse(), result_sign)
 end

@@ -150,7 +150,7 @@ assert(tostring(subResult7) == "(-1) * 192379816283306908655")
 assert(tostring(subResult8) == "(1) * 0")
 
 print("   --> INTEGER SUBTRACT SMALL --- (PASS)")
-print("   --> INTEGER SUBTRACT BIG --- (5.2)")
+print("   --> INTEGER SUBTRACT BIG   --- (5.2)")
 
 
 
@@ -160,6 +160,8 @@ local bigResult1 = bigSub1 - bigSub2
 
 assert(tostring(bigResult1) == "(1) * 654644343434123123123134530850888933916281526492009274248993988001164280905001095574434218278893900800528360288006503232569620439876995447928846743")
 
+
+print("   --> INTEGER SUBTRACT BIG   --- (DONE)")
 print("--- INTEGER SUBTRACTION    --- (PASS)")
 -------------------------------------------------------------------------------
 
