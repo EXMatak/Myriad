@@ -244,6 +244,11 @@ function Integer:Add_GradeSchool(value)
     -- If a == -a, return 0.
     if (addend1.digits == addend2.digits and addend1.sign ~= addend2.sign) then return _Integer_NewRaw("0", 1) end
 
+    if (addend1.sign ~= addend2.sign) then
+        if addend1.sign == 1 then return addend1 - addend2:Absolute()
+        else return addend2 - addend1:Absolute() end
+    end
+
     --[[ 
     Algorithm here is the standard grade school addition algorithm.
     A remainder_table and a result_table are used to store semi-calculations.
