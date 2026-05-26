@@ -1,5 +1,7 @@
 -- I guess that current paradigm to try making this in is OOP
 
+--- Wish that I could say that the functions have some structure but right now everythings just kinda where I started writing.
+
 ---@class Integer
 ---@field digits string
 ---@field sign 1 | -1
@@ -157,6 +159,53 @@ function NumberParse(value)
     return digits, sign
 end
 
+-------------------------------------------------------------------------------- START OF RELATIONS
+
+---@param a Integer
+---@param b Integer
+---@return boolean
+function Integer.lessEqual(a, b)
+    if (a.sign == -1 and b.sign == 1) then return true end
+    if (a.sign == 1 and b.sign == -1) then return false end
+
+    if (#a.digits < #b.digits) then return true end
+    if (#a.digits > #b.digits) then return false end
+
+    -- Iterate through both numbers, if current digits do not match, compare them lexicographically.
+    -- That shouldn't really mean much since it's just comparing digits regardless but I digress.
+    for i = 1, #a.digits, 1 do
+        local currA = a.digits:sub(i, i)
+        local currB = b.digits:sub(i, i)
+        
+        if (currA ~= currB) then
+            if (currA > currB) then return a.sign ~= 1 else return a.sign == 1 end 
+        end
+    end
+
+    -- At the very end, if no mistake is found, they are equal.
+    return true
+end
+IntegerMT.__le = Integer.lessEqual
+
+---@param a Integer
+---@param b Integer
+---@return boolean
+function Integer.equals(a, b)
+    return a.sign == b.sign and a.digits == b.digits
+end
+IntegerMT.__eq = Integer.equals
+
+
+---@param a Integer
+---@param b Integer
+---@return boolean
+function Integer.lessThan(a, b)
+    return (a <= b) and not (a == b)
+end
+IntegerMT.__lt = Integer.lessThan
+
+-------------------------------------------------------------------------------- END OF RELATIONS
+
 --- Returns the absolute value of an Integer object.
 --- Quite self explanatory.
 ---@return Integer
@@ -233,47 +282,9 @@ function Integer:Add_GradeSchool(value)
 end
 IntegerMT.__add = Integer.Add_GradeSchool
 
----@param a Integer
----@param b Integer
----@return boolean
-function Integer.lessEqual(a, b)
-    if (a.sign == -1 and b.sign == 1) then return true end
-    if (a.sign == 1 and b.sign == -1) then return false end
-
-    if (#a.digits < #b.digits) then return true end
-    if (#a.digits > #b.digits) then return false end
-
-    -- Iterate through both numbers, if current digits do not match, compare them lexicographically.
-    -- That shouldn't really mean much since it's just comparing digits regardless but I digress.
-    for i = 1, #a.digits, 1 do
-        local currA = a.digits:sub(i, i)
-        local currB = b.digits:sub(i, i)
-        
-        if (currA ~= currB) then
-            if (currA > currB) then return a.sign ~= 1 else return a.sign == 1 end 
-        end
-    end
-
-    -- At the very end, if no mistake is found, they are equal.
-    return true
+function Integer:ToString()
+    return "(" .. self.sign .. ")" .. " * " .. self.digits
 end
-IntegerMT.__le = Integer.lessEqual
-
----@param a Integer
----@param b Integer
----@return boolean
-function Integer.equals(a, b)
-    return a.sign == b.sign and a.digits == b.digits
-end
-IntegerMT.__eq = Integer.equals
-
-
----@param a Integer
----@param b Integer
----@return boolean
-function Integer.lessThan(a, b)
-    return (a <= b) and not (a == b)
-end
-IntegerMT.__lt = Integer.lessThan
+IntegerMT.__tostring = Integer.ToString
 
 return IntegerMT

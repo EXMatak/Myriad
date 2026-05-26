@@ -1,7 +1,7 @@
 local myriad = require 'myriad'
 
 print("--- INTEGER TEST START [ ] ---")
--------------------------------------------------------------------------------
+------------------------------------------------------------------------------- INITS
 print("--- INTEGER INITIALIZATION --- (1)")
 
 local testNum1 = myriad.newInteger(123)
@@ -27,9 +27,8 @@ assert(testNum1.digits == "123" and testNum1.sign == 1)
 assert(testNum6.digits == "124" and testNum6.sign == 1)
 
 print("--- INTEGER INITIALIZATION --- (PASS)")
--------------------------------------------------------------------------------
+------------------------------------------------------------------------------- RELATIONS
 print("--- INTEGER RELATIONS      --- (2)")
-
 
 assert(testNum1 <= testNum3)
 assert(not (testNum1 >= testNum3))
@@ -47,7 +46,7 @@ assert(testNum1 ~= testNum3)
 
 
 print("--- INTEGER RELATIONS      --- (PASS)")
--------------------------------------------------------------------------------
+------------------------------------------------------------------------------- ADDITION
 print("--- INTEGER ADDITION       --- (3)")
 print("   --- INTEGER ADDITION SMALL --- (3.1)")
 
@@ -103,9 +102,19 @@ assert(addBigResult2.digits == "100000000000000000000000000000000000000000000000
 
 print("   --- INTEGER ADDITION BIG   --- (PASS)")
 print("--- INTEGER ADDITION       --- (PASS)")
+------------------------------------------------------------------------------- PRINTING
+print("--- INTEGER PRINTING       --- (4)")
 
+-- print(addResult9)
+assert(tostring(addResult9) == "(1) * 2469135780")
+-- print(addNum1)
+assert(tostring(addNum1) == "(1) * 0")
 
+print("--- INTEGER PRINTING       --- (PASS)")
 -------------------------------------------------------------------------------
+
+
+
 print("")
 print("")
 print("---------- \\(^.^)/ -----------")
