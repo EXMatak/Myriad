@@ -59,18 +59,11 @@ end
 --- 
 --- Assumes value input to be already valid.
 --- Only use when **100 %** sure that format is correct.
+---@param self Integer
 ---@param digits string
 ---@param sign 1 | -1
-function Integer:initRaw(digits, sign)
+local function initRaw(self, digits, sign)
     self.digits, self.sign = digits, sign
-end
-
----@param value string | number | Integer
-function Integer:new(value) 
-    local new = setmetatable({}, IntegerMT)
-    new:init(value)
-
-    return new
 end
 
 --- Creates a new Integer object from two parameters.
@@ -78,9 +71,9 @@ end
 --- Only use when **certain** that format is correct.
 ---@param digits string
 ---@param sign 1 | -1
-function Integer:newRaw(digits, sign)
+local function _Integer_NewRaw(digits, sign)
     local new = setmetatable({}, IntegerMT)
-    new:initRaw(digits, sign)
+    initRaw(new, digits, sign)
 
     return new
 end
@@ -218,9 +211,10 @@ IntegerMT.__lt = Integer.lessThan
 --- Quite self explanatory.
 ---@return Integer
 function Integer:Absolute()
-    return Integer:newRaw(self.digits, self.sign)
+    return _Integer_NewRaw(self.digits, 1)
 end
 
+--- Returns the sign of the operation post addition.
 ---@param addend1 Integer
 ---@param addend2 Integer
 ---@return 1 | -1
@@ -235,9 +229,8 @@ local function SignPostAddition(addend1, addend2)
     elseif (addend1.sign == 1 and addend2.sign == -1) then
         if (addend1:Absolute() < addend2:Absolute()) then return -1
         else return 1 end
-    end
 
-    error("Couldn't solve sign post addition.", 2)
+    else error("Couldn't solve sign post addition.", 2) end
 end
 
 --- Performs addition using the grade-school algorithm.
@@ -249,11 +242,11 @@ function Integer:Add_GradeSchool(value)
     local addend2 = value
 
     -- If a == -a, return 0.
-    if (addend1.digits == addend2.digits and addend1.sign ~= addend2.sign) then return Integer:newRaw("0", 1) end
+    if (addend1.digits == addend2.digits and addend1.sign ~= addend2.sign) then return _Integer_NewRaw("0", 1) end
 
     --[[ 
     Algorithm here is the standard grade school addition algorithm.
-    A remainderTable and a resultTable are used to store semi-calculations.
+    A remainder_table and a result_table are used to store semi-calculations.
     Digits are flipped so the higher absolute is always the first number.
     ]]
 
@@ -262,7 +255,7 @@ function Integer:Add_GradeSchool(value)
 
     local result_sign = SignPostAddition(addend1, addend2)
 
-    local table_remainders = {0}
+    local table_remainders = {0} -- TODO: Rework so that this is not a table.
     local table_result = {}
 
     if (#addend_digits1 < #addend_digits2) then
@@ -285,10 +278,104 @@ function Integer:Add_GradeSchool(value)
 
     if table_remainders[#table_remainders] ~= 0 then table_result[#table_result+1] = table_remainders[#table_remainders] end
 
-    return Integer:newRaw(table.concat(table_result):reverse(), result_sign)
+    return _Integer_NewRaw(table.concat(table_result):reverse(), result_sign)
 end
 IntegerMT.__add = Integer.Add_GradeSchool
 
+--- Returns the sign of the operation post subtraction.
+---@param minuend Integer
+---@param subtrahend Integer
+---@return 1 | -1
+local function SignPostSubtraction(minuend, subtrahend)
+    -- Signs are equal.
+    if (minuend.sign == subtrahend.sign and minuend.sign == 1) then
+        if (minuend:Absolute() < subtrahend:Absolute()) then return -1
+        else return 1 end
+
+    elseif (minuend.sign == subtrahend.sign and minuend.sign == -1) then
+        if (minuend:Absolute() < subtrahend:Absolute()) then return 1
+        else return -1 end
+
+    elseif (minuend.sign == -1 and subtrahend.sign == 1) then return -1
+    -- Read above.    
+    elseif (minuend.sign == 1 and subtrahend.sign == -1) then return 1
+
+    else error("Couldn't solve sign post subtraction.", 2) end
 end
+
+--- Returns the given string without the zeroes at the end.
+--- 
+--- Returned string is in normal form.
+---@param value string
+---@return string
+local function RemoveLeadingZeroes(value)
+    for i = 1, #value, 1 do
+        if (value:sub(i, i) ~= "0") then
+            return value:sub(i)
+        end
+    end
+
+    return "0"
+end
+
+--- Performs subtraction using the grade-school algorithm.
+--- `O(n)` currently.
+---@param value Integer
+---@return Integer
+function Integer:Subtract_GradeSchool(value)
+    local minuend = self
+    local subtrahend = value
+
+    -- If a == a, return 0.
+    if (minuend == subtrahend) then return _Integer_NewRaw("0", 1) end
+
+    --[[ 
+    Algorithm here is the standard grade school subtraction algorithm.
+    A borrow and a result_table are used to store semi-calculations.
+    Digits are flipped so the higher absolute is always the first number.
+    ]]
+
+    local result_sign = SignPostSubtraction(minuend, subtrahend)
+
+    if (minuend.sign ~= subtrahend.sign) then
+        local flipped = subtrahend:Absolute()
+        flipped.sign = -flipped.sign
+
+        return minuend + flipped
+    end
+
+    local top
+    local bot
+
+    if (minuend:Absolute() >= subtrahend:Absolute()) then
+        top = minuend.digits:reverse()
+        bot = subtrahend.digits:reverse()
+    else 
+        top = subtrahend.digits:reverse()
+        bot = minuend.digits:reverse()
+    end
+
+    local borrow = 0
+    local result_table = {}
+
+    local length_bot = #bot
+    for i = 1, #top, 1 do
+        local digit_top = tonumber(top:sub(i, i))
+        local digit_bot = i <= length_bot and tonumber(bot:sub(i, i)) or 0
+
+        local digit_curr = digit_top - borrow - digit_bot
+        if digit_curr < 0 then
+            digit_curr = digit_curr + 10
+            borrow = 1
+        else borrow = 0 end
+
+        result_table[i] = digit_curr
+    end
+
+    local result_digits = RemoveLeadingZeroes(table.concat(result_table):reverse())
+
+    return _Integer_NewRaw(result_digits, result_sign)
+end
+IntegerMT.__sub = Integer.Subtract_GradeSchool
 
 return IntegerMT

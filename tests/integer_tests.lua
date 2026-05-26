@@ -54,7 +54,7 @@ assert(not (cmpNum1 <= cmpNum2))
 print("--- INTEGER RELATIONS      --- (PASS)")
 ------------------------------------------------------------------------------- ADDITION
 print("--- INTEGER ADDITION       --- (3)")
-print("   --- INTEGER ADDITION SMALL --- (3.1)")
+print("   --> INTEGER ADDITION SMALL --- (3.1)")
 
 local addNum1 = myriad.newInteger(0)
 local addNum2 = myriad.newInteger(1)
@@ -91,8 +91,8 @@ assert(addResult8.digits == "912" and addResult8.sign == -1)
 assert(addResult9.digits == "2469135780" and addResult9.sign == 1)
 
 
-print("   --- INTEGER ADDITION SMALL --- (PASS)")
-print("   --- INTEGER ADDITION BIG   --- (3.2)")
+print("   --> INTEGER ADDITION SMALL --- (PASS)")
+print("   --> INTEGER ADDITION BIG   --- (3.2)")
 
 -- 
 local addBig1 = myriad.newInteger("999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999")
@@ -106,7 +106,7 @@ local addBigResult2 = addBig1 + testNum5
 -- print(addBigResult2.sign .. " * " .. addBigResult2.digits)
 assert(addBigResult2.digits == "1000000000000000000000000000000000000000000000000000000000000000000123313446345461134345634346464343434347537437443413164467673343434343574567657676765243147967532" and addBigResult2.sign == 1)
 
-print("   --- INTEGER ADDITION BIG   --- (PASS)")
+print("   --> INTEGER ADDITION BIG   --- (PASS)")
 print("--- INTEGER ADDITION       --- (PASS)")
 ------------------------------------------------------------------------------- PRINTING
 print("--- INTEGER PRINTING       --- (4)")
@@ -117,9 +117,51 @@ assert(tostring(addResult9) == "(1) * 2469135780")
 assert(tostring(addNum1) == "(1) * 0")
 
 print("--- INTEGER PRINTING       --- (PASS)")
+------------------------------------------------------------------------------- SUBTRACTION
+print("--- INTEGER SUBTRACTION    --- (5)")
+print("   --> INTEGER SUBTRACT SMALL --- (5.1)")
+
+
+local newSub1 = myriad.newInteger(0)
+local newSub2 = myriad.newInteger(1)
+local newSub3 = myriad.newInteger(10)
+local newSub4 = myriad.newInteger(100)
+local newSub5 = myriad.newInteger("-123")
+local newSub6 = myriad.newInteger("-412")
+local newSub7 = myriad.newInteger("192379816283698126893")
+local newSub8 = myriad.newInteger("391218238")
+
+local subResult1 = newSub1 - newSub1
+local subResult2 = newSub1 - newSub2
+local subResult3 = newSub3 - newSub2
+local subResult4 = newSub5 - newSub4
+local subResult5 = newSub6 - newSub5
+local subResult6 = newSub7 - newSub2
+local subResult7 = newSub8 - newSub7
+local subResult8 = newSub7 - newSub7
+
+assert(tostring(subResult1) == "(1) * 0")
+assert(tostring(subResult2) == "(-1) * 1")
+assert(tostring(subResult3) == "(1) * 9")
+assert(tostring(subResult4) == "(-1) * 223")
+assert(tostring(subResult5) == "(-1) * 289")
+assert(tostring(subResult6) == "(1) * 192379816283698126892")
+assert(tostring(subResult7) == "(-1) * 192379816283306908655")
+assert(tostring(subResult8) == "(1) * 0")
+
+print("   --> INTEGER SUBTRACT SMALL --- (PASS)")
+print("   --> INTEGER SUBTRACT BIG --- (5.2)")
+
+
+
+local bigSub1 = myriad.newInteger("654644343434123123123134654322123646812630489126938648261890346961293649861902364960126903469162936490691263946912693469160239468912693460619203649")
+local bigSub2 = myriad.newInteger("123471234712896348962634929374012896358960129368956901269385692685190269035690162903658906190236590619029035698012690356906")
+local bigResult1 = bigSub1 - bigSub2
+
+assert(tostring(bigResult1) == "(1) * 654644343434123123123134530850888933916281526492009274248993988001164280905001095574434218278893900800528360288006503232569620439876995447928846743")
+
+print("--- INTEGER SUBTRACTION    --- (PASS)")
 -------------------------------------------------------------------------------
-
-
 
 print("")
 print("")
