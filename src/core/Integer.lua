@@ -2,7 +2,7 @@
 
 ---@class Integer
 ---@field digits string
----@field sign 1 | 0 | -1
+---@field sign 1 | -1
 local Integer = {}
 
 local IntegerMT = {
@@ -27,6 +27,8 @@ local NumberParse
 --- - string: optionally takes `[+]` | `[-]`, if no sign is given, positive is assumed.
 --- - number: if negative, sign becomes -1, flips string value to positive.
 --- - table: copy constructs from another `Integer` type.
+--- 
+--- `"0"` is assumed to be positive.
 ---@param value string | number | Integer
 function Integer:init(value)
     -- Validate as number
@@ -155,30 +157,34 @@ function NumberParse(value)
     return digits, sign
 end
 
+--- Returns the absolute value of an Integer object.
+--- Quite self explanatory.
 ---@return Integer
-function Integer:Absolute() 
-    return IntegerMT.new(self.digits)
+function Integer:Absolute()
+    return Integer:newRaw(self.digits, self.sign)
 end
 
 ---@param addend1 Integer
 ---@param addend2 Integer
----@return '+' | '-'
+---@return 1 | -1
 local function SignPostAddition(addend1, addend2)
     -- Signs are equal.
-    if (addend1.sign == addend2.sign) then return addend1.sign == 1 and '+' or '-'
+    if (addend1.sign == addend2.sign) then return addend1.sign == 1 and 1 or -1
     -- First is negative, second is positive. If abs(first) < abs(second), result is positive.
     elseif (addend1.sign == -1 and addend2.sign == 1) then
-        if (addend1:Absolute() < addend2:Absolute()) then return '+'
-        else return '-' end
+        if (addend1:Absolute() < addend2:Absolute()) then return 1
+        else return -1 end
     -- Read above.    
     elseif (addend1.sign == 1 and addend2.sign == -1) then
-        if (addend1:Absolute() < addend2:Absolute()) then return '-'
-        else return '+' end
+        if (addend1:Absolute() < addend2:Absolute()) then return -1
+        else return 1 end
     end
 
     error("Couldn't solve sign post addition.", 2)
 end
 
+--- Performs addition using the grade-school algorithm.
+--- `O(n)` currently.
 ---@param value Integer
 ---@return Integer
 function Integer:Add_GradeSchool(value) 
@@ -186,39 +192,44 @@ function Integer:Add_GradeSchool(value)
     local addend2 = value
 
     -- If a == -a, return 0.
-    if (addend1.digits == addend2.digits and addend1.sign ~= addend2.sign) then return IntegerMT.new(0) end
+    if (addend1.digits == addend2.digits and addend1.sign ~= addend2.sign) then return Integer:newRaw("0", 1) end
 
-    local addendDigits1 = addend1.digits:reverse()
-    local addendDigits2 = addend2.digits:reverse()
+    --[[ 
+    Algorithm here is the standard grade school addition algorithm.
+    A remainderTable and a resultTable are used to store semi-calculations.
+    Digits are flipped so the higher absolute is always the first number.
+    ]]
 
-    local resultSign = SignPostAddition(addend1, addend2)
+    local addend_digits1 = addend1.digits:reverse()
+    local addend_digits2 = addend2.digits:reverse()
 
-    local remainderTable = {0}
-    local resultTable = {}
+    local result_sign = SignPostAddition(addend1, addend2)
 
-    if (#addendDigits1 < #addendDigits2) then
-        addendDigits1, addendDigits2 = addendDigits2, addendDigits1
+    local table_remainders = {0}
+    local table_result = {}
+
+    if (#addend_digits1 < #addend_digits2) then
+        addend_digits1, addend_digits2 = addend_digits2, addend_digits1
     end
 
 
-    local maxDigitLength = #addendDigits1
-    local otherDigitLength = #addendDigits2
-    for i = 1, maxDigitLength, 1 do
-        -- if (currDigit > otherDigitLength) 
+    local digitLength_max = #addend_digits1
+    local digitLength_min = #addend_digits2
+    for i = 1, digitLength_max, 1 do
 
-        local currA = tonumber(addendDigits1:sub(i, i))
-        local currB = i <= otherDigitLength and tonumber(addendDigits2:sub(i, i)) or 0
-        local together = currA + currB + remainderTable[i]
+        local currA = tonumber(addend_digits1:sub(i, i))
+        local currB = i <= digitLength_min and tonumber(addend_digits2:sub(i, i)) or 0
+        local together = currA + currB + table_remainders[i]
         local togetherLastDigit = together % 10
         local remainder = math.floor(together / 10)
 
-        remainderTable[i + 1] = remainder
-        resultTable[i] = togetherLastDigit
+        table_remainders[i + 1] = remainder
+        table_result[i] = togetherLastDigit
     end
 
-    if remainderTable[#remainderTable] ~= 0 then resultTable[#resultTable+1] = remainderTable[#remainderTable] end
+    if table_remainders[#table_remainders] ~= 0 then table_result[#table_result+1] = table_remainders[#table_remainders] end
 
-    return IntegerMT.new(resultSign .. table.concat(resultTable):reverse()) -- TODO: create new initializer that assumes input is valid.
+    return Integer:newRaw(table.concat(table_result):reverse(), result_sign)
 end
 IntegerMT.__add = Integer.Add_GradeSchool
 
