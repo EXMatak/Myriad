@@ -11,7 +11,6 @@ local Integer = {}
 
 local IntegerMT = {
     __index = Integer,
-    --TODO: __add, __sub etc.
 }
 
 -- ! ------------------------------------------------------------------------------ INITIALIZATION
@@ -42,7 +41,7 @@ function Integer:init(value)
     if (type(value) == "number") then 
         if not NumberValidate(value) then error("Bad number validation at initialization", 2) end
         self.digits, self.sign = NumberParse(value)
-    
+
     -- Validate as string
     elseif(type(value) == "string") then 
         if not StringValidate(value) then error("Bad string validation at initialization ", 2) end
@@ -145,13 +144,11 @@ end
 
 ---Parses given `number` value into its sign and its string value separately.
 ---Negative numbers return a [sign = -1], positive and zero returns [sign = 1]
----@param value? number
+---@param value number
 ---@return string, integer
 function NumberParse(value)
     local digits
     local sign
-
-    if (value == nil) then return '', 0 end
 
     if (value < 0) then
         sign = -1
@@ -179,8 +176,8 @@ function Integer.lessEqual(a, b)
     if (a.sign == -1 and b.sign == 1) then return true end
     if (a.sign == 1 and b.sign == -1) then return false end
 
-    if (#a.digits < #b.digits) then return true end
-    if (#a.digits > #b.digits) then return false end
+    if (#a.digits < #b.digits) then return a.sign == 1 end
+    if (#a.digits > #b.digits) then return a.sign ~= 1 end
 
     -- Iterate through both numbers, if current digits do not match, compare them lexicographically.
     -- That shouldn't really mean much since it's just comparing digits regardless but I digress.

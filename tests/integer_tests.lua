@@ -11,7 +11,7 @@ local testNum4 = myriad.newInteger("-456")
 local testNum5 = myriad.newInteger("-123313446345461134345634346464343434347537437443413164467673343434343574567657676765243147967533")
 local testNum6 = myriad.newInteger(testNum1)
 assert(not pcall(myriad.newInteger, "12.3"))
-assert(not pcall(myriad.newInteger, math.huge))
+assert(not pcall(myriad.newInteger, -math.huge))
 assert(not pcall(myriad.newInteger, ''))
 assert(not pcall(myriad.newInteger, "12a"))
 assert(not pcall(myriad.newInteger, 0 / 0))
@@ -43,6 +43,12 @@ assert(not (testNum1 > testNum3))
 assert(not (testNum1 >= testNum3))
 assert(not (testNum1 == testNum3))
 assert(testNum1 ~= testNum3)
+
+local cmpNum1 = myriad.newInteger("-100")
+local cmpNum2 = myriad.newInteger("-1000")
+
+assert(cmpNum2 <= cmpNum1)
+assert(not (cmpNum1 <= cmpNum2))
 
 
 print("--- INTEGER RELATIONS      --- (PASS)")
