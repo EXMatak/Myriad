@@ -1,6 +1,15 @@
--- I guess that current paradigm to try making this in is OOP
 
---- Wish that I could say that the functions have some structure but right now everythings just kinda where I started writing.
+
+--[[
+    Internal representation and other important thoughts ->
+
+    Integers are currently represented as a table containing the digit string and the sign.
+    Digits are stored as a string in base10, sign is stored as either 1 (denoting +) or -1 (denoting -).
+    Zero should always normalize to a positive sign.
+
+    Input checking is currently quite limited. 
+    While the initializer can distinguish between `some` types recieved, it cannot for example normalize "00".
+]]
 
 -- + ------------------------------------------------------------------------------ META
 
